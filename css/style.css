@@ -97,3 +97,112 @@ textarea {
 .btn-submit:active {
     transform: translateY(0);
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    /* Remplace 'ton_image.jpg' par  nom exact de ton fichier dans le dossier image */
+    background-image: url('../image/gemini_generated_image_l7vm2zl7vm2zl7vm.png');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+/* Glassmorphism Card Style */
+.welcome,
+.Bienvenue {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.85);
+    /* Semi-transparent white */
+    backdrop-filter: blur(10px);
+    /* Blur effect */
+    -webkit-backdrop-filter: blur(10px);
+    /* Safari support */
+    padding: 60px 40px;
+    margin: 50px auto;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.welcome:hover,
+.Bienvenue:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+h1,
+h4 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+p,
+li {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.btn-login:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer Specifics */
+footer.Bienvenue {
+    margin-top: 80px;
+    padding-bottom: 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 30px;
+    text-align: left;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-section ul {
+    list-style: none;
+    /* Remove bullets */
+    padding: 0;
+}
+
+.footer-section li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-section i {
+    color: #e74c3c;
+    /* Accent color for icons */
+    width: 20px;
+    text-align: center;
+}
+
+.footer-bottom {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+}

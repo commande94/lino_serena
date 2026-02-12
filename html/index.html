@@ -4,24 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lido Selena</title>
     <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Lido Selena</title>
 </head>
 
 <body>
-    <form action="">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
 
-        <div class="form-group">
-            <label for="password">Mot de passe:</label>
-            <input type="password" id="password" name="password" class="password-field" required>
-        </div>
+    <section class="welcome">
+        <h1>Bienvenue sur notre espace adminiatrateur de Lido Selena</h1>
+        <p>Ici vous pouvez gérer les produits, les clients, les commandes et les utilisateurs.</p>
+        <a href="login.html" class="btn-login">Connexion Super Utilisateur</a>
+    </section>
 
-        <button type="submit" class="btn-submit">Connexion</button>
-    </form>
+    <script src="../js/main.js"></script>
+    <footer class="Bienvenue">
+        <div class="container">
+            <div class="footer-content">
+
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Contact</h4>
+                    <ul class="footer-list">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Avenue du Vélo, 75015 Paris</li>
+                        <li><i class="fas fa-phone"></i> +33 1 23 45 67 89</li>
+                        <li><i class="fas fa-envelope"></i> contact@lino-serena.fr</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Horaires</h4>
+                    <ul class="footer-list">
+                        <li>Lun-Ven: 9h-19h</li>
+                        <li>Samedi: 10h-18h</li>
+                        <li>Dimanche: 10h-16h</li>
+                    </ul>
+                </div>
+
+
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy;
+                    <?php echo date('Y'); ?> Lino Serena. Tous droits réservés.
+                </p>
+                <p>Lino Serena - EPSI</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+
+
+
 </body>
 
 </html>
