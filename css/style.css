@@ -98,6 +98,25 @@ textarea {
     transform: translateY(0);
 }
 
+.inscription-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+.inscription-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.inscription-link a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 body {
