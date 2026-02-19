@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lido Selena - Login</title>
+    <title>Connexion - Lido Serena</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body>
-    <form action="">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
+<body class="page-accueil">
 
-        <div class="form-group">
-            <label for="password">Mot de passe:</label>
-            <input type="password" id="password" name="password" class="password-field" required>
+    <div class="container">
+        <div class="card card-small">
+            <h2>Connexion</h2>
+            <form action="dashboard.html">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" required>
+                </div>
+                <button type="submit" class="btn">Connexion</button>
+            </form>
+            <p class="lien-inscription">Pas de compte ? <a href="inscription.html">S'inscrire</a></p>
         </div>
+    </div>
 
-        <button type="submit" class="btn-submit">Connexion</button>
-    </form>
 </body>
 
 </html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Lido Serena</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1><i class="fas fa-utensils"></i> Lido Serena</h1>
+        <div>
+            <a href="index.html" class="btn-small">Déconnexion</a>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+
+        <!-- AJOUTER -->
+        <section class="section">
+            <h2><i class="fas fa-plus-circle"></i> Ajouter un plat</h2>
+            <form id="form-ajouter" class="form-inline">
+                <input type="text" id="nom-plat" placeholder="Nom du plat" required>
+                <select id="categorie-plat" required>
+                    <option value="">Catégorie</option>
+                    <option value="entree">Entrée</option>
+                    <option value="plat">Plat</option>
+                    <option value="dessert">Dessert</option>
+                    <option value="boisson">Boisson</option>
+                </select>
+                <input type="number" id="prix-plat" placeholder="Prix €" step="0.01" required>
+                <button type="submit" class="btn-success"><i class="fas fa-plus"></i> Ajouter</button>
+            </form>
+        </section>
+
+        <!-- LISTE -->
+        <section class="section">
+            <h2><i class="fas fa-list"></i> Mes plats</h2>
+            <div class="table-container">
+                <table id="table-plats">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Catégorie</th>
+                            <th>Prix</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Plats affichés ici -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="../js/main.js"></script>
+</body>
+
+</html>
