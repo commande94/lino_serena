@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $pass_saisi = $_POST['password']; 
 
     try {
-        $query = $bdd->prepare("SELECT * FROM staff WHERE email = :email");
+        $query = $pdo->prepare("SELECT * FROM staff WHERE email = :email");
         $query->execute(['email' => $email_saisi]);
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
