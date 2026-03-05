@@ -1,0 +1,186 @@
+<h1 class="dashboard-title">Statistiques Live</h1>
+
+<div class="dashboard-wrapper">
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="chart-container1">
+        <canvas id="myPie"></canvas>
+    </div>
+
+    <div class="chart-container2">
+        <canvas id="myLine"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+
+    // premier graphique avec les colonnes
+
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+
+    //Deuxieme graphique avec le pie chart
+
+    const data = {
+        labels: [
+            'Red',
+            'Blue',
+            'Yellow'
+        ],
+        datasets: [{
+            label: 'My First dataset',
+            data: [300, 50, 100],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    const config = {
+        type: 'pie',
+        data: data,
+    };
+    const pie = document.getElementById('myPie');
+    new Chart(pie, config);
+
+
+
+    //Troisieme graphique avec le line chart
+
+    const labels_line = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet'];
+
+    const datas_line = {
+        labels: labels_line,
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                tension: 0.1
+            },
+            {
+                label: 'Dataset 2',
+                data: [28, 48, 40, 19, 86, 27, 90],
+                borderColor: 'rgb(54, 162, 235)', // Bleu
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                tension: 0.1
+            }
+        ]
+    };
+
+
+    const configu = {
+        type: 'line',
+        data: datas_line,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Graphique Linéaire (Données Fixes)'
+                }
+            }
+        },
+    };
+
+    const ctxLine = document.getElementById("myLine");
+    new Chart(ctxLine, configu);
+</script>
+
+<style>
+    /* 1. Fond de page et police */
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        margin: 0;
+        padding: 40px;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* 2. Le titre (optionnel, à ajouter en HTML) */
+    .dashboard-title {
+        margin-bottom: 30px;
+        font-size: 2rem;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 3. Conteneur principal pour aligner les graphiques */
+    .dashboard-wrapper {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 25px;
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    /* 4. On transforme tes classes existantes en "Cartes" */
+    .chart-container,
+    .chart-container1,
+    .chart-container2 {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        /* Effet de verre dépoli */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+
+        /* On annule tes anciens styles de largeur/flex pour que la grille gère tout */
+        width: auto !important;
+        display: block !important;
+    }
+
+    /* Petit effet de survol */
+    .chart-container:hover,
+    .chart-container1:hover,
+    .chart-container2:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 210, 255, 0.5);
+    }
+
+    /* Ajustement spécial pour le graphique en ligne (prend toute la largeur si besoin) */
+    .chart-container2 {
+        grid-column: 1 / -1;
+    }
+
+    canvas {
+        max-width: 100% !important;
+    }
+</style>

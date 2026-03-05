@@ -5,7 +5,7 @@ Bienvenue dans le dépôt du projet **Lido Serena**. Cette application web a ét
 ---
 
 ## 📝 Présentation du projet
-Le système répond aux besoins de modernisation de la direction pour éviter les erreurs de service et piloter les stocks avec précision :
+Le système répond aux besoins de modernisation de la direction pour éviter les erreurs de service et piloter les stocks avec précision :V
 * **Gestion de la Carte** : Interface administrateur pour ajouter, modifier ou supprimer des plats, menus et boissons.
 * **Tableau de Bord (Dashboard)** : Visualisation de données via des graphiques (plats les plus commandés, fréquentation, CA) pour mieux comprendre les besoins clients.
 * **Sécurité** : Accès restreint par authentification avec mot de passe sécurisé.

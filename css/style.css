@@ -8,11 +8,13 @@ body {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    padding: 20px;
     display: flex;
+    flex-direction: column;
+    padding: 20px;
     justify-content: center;
     align-items: center;
 }
+
 
 h1 {
     color: #333;
