@@ -10,11 +10,13 @@
 </head>
 
 <body>
+   
+    <a href="inscription.html" class="btn-inscription">
+            Inscription d'un nouveau membre par le Super-Admin
+    </a>
+    
     <?php
     require_once '../php/bdd.php';
-
-    // Note: Assuming $pdo is available, as in other files. If not, it might be $bdd.
-    
     $message = '';
     if (isset($_GET['insert']) && $_GET['insert'] == 'success') {
         $message = 'Produit ajouté avec succès!';

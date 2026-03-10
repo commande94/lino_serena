@@ -337,3 +337,29 @@ th {
 .btn-delete:hover {
     background-color: #c82333;
 }
+
+.btn-inscription {
+    position: absolute;
+    /* bouton flottant */
+    top: 20px;
+    /* distance depuis le haut */
+    right: 30px;
+    /* distance depuis la droite */
+    background-color: #d4af37;
+    /* doré */
+    color: #0f0f0f;
+    /* texte foncé pour contraste */
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+    z-index: 1000;
+}
+
+.btn-inscription:hover {
+    background-color: #b8962e;
+    /* doré plus foncé au survol */
+    color: #ffffff;
+    /* texte blanc au hover pour contraste */
+}
