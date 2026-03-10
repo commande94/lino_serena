@@ -39,6 +39,9 @@ $prixJSON = json_encode($prixProduits);
 <body>
 
     <h1 class="dashboard-title">Statistiques Live</h1>
+    <nav>
+        <a href="administration.php" class="btn-back">Retour à l'administration</a>
+    </nav>
 
     <div class="dashboard-wrapper">
         <div class="chart-container">
