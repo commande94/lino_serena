@@ -37,6 +37,9 @@
     ?>
     <div class="container">
         <h1>Dashboard des Produits</h1>
+        <nav>
+            <a href="chart.php" class="btn-chart">Voir les statistiques</a>
+        </nav>
 
         <?php if ($message): ?>
             <div class="message success">
