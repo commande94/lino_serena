@@ -100,4 +100,4 @@
 
 </html>
 </content>
-<parameter name="filePath">c:\xampp\htdocs\lido_serena\html\dashboard.php
+<parameter name="filePath">
