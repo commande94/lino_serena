@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: connexion.html');
+    exit();
+}
 require_once '../php/bdd.php';
 
 // Récupérer les catégories dynamiquement depuis la base de données
@@ -29,19 +34,21 @@ $categoriesJSON = json_encode($nomsCategories);
 
     <h1 class="dashboard-title" style="background-color: white;">Statistiques Live</h1>
     <nav>
+        <span class="welcome-user" style="background-color: white;">Bienvenue, <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
         <a href="administration.php" class="btn-back" style="background-color: white;">Retour à l'administration</a>
+        <a href="../php/logout.php" class="btn-logout" style="background-color: white;">Déconnexion</a>
     </nav>
 
     <div class="dashboard-wrapper">
-        <div class="chart-container">
+        <div class="chart-container" style="background-color: white;">
             <canvas id="myChart"></canvas>
         </div>
 
-        <div class="chart-container1">
+        <div class="chart-container1" style="background-color: white;">
             <canvas id="myPie"></canvas>
         </div>
 
-        <div class="chart-container2">
+        <div class="chart-container2" style="background-color: white;">
             <canvas id="myLine"></canvas>
         </div>
     </div>

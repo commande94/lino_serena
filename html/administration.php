@@ -11,6 +11,11 @@
 
 <body>
     <?php
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: connexion.html');
+        exit();
+    }
     require_once '../php/bdd.php';
 
     // Note: Assuming $pdo is available, as in other files. If not, it might be $bdd.
@@ -38,7 +43,9 @@
     <div class="container">
         <h1>Dashboard des Produits</h1>
         <nav>
+            <span class="welcome-user" style="background-color: white;">Bienvenue, <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
             <a href="chart.php" class="btn-chart">Voir les statistiques</a>
+            <a href="../php/logout.php" class="btn-logout" style="background-color: white;">Déconnexion</a>
         </nav>
 
         <?php if ($message): ?>
