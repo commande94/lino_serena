@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         // 6. Redirection vers le dashboard avec un message de succès
-        header('Location: ../html/dashboard.php?insert=success');
+        header('Location: ../html/administration.php?insert=success');
         exit();
 
     } catch (PDOException $e) {

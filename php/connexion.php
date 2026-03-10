@@ -4,7 +4,7 @@ require_once 'bdd.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email_saisi = trim($_POST['email']);
-    $pass_saisi = $_POST['password']; 
+    $pass_saisi = $_POST['password'];
 
     try {
         $query = $pdo->prepare("SELECT * FROM staff WHERE email = :email");
@@ -15,8 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['user_id'] = $user['id_staff'];
             $_SESSION['nom'] = $user['nom'];
             $_SESSION['prenom'] = $user['prenom'];
-            
-            header("Location: ../html/menu.html");
+
+            header("Location: ../html/administration.php");
             exit();
         } else {
             header('Location: ../html/connexion.html?error=1');

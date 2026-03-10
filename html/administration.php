@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -11,6 +9,31 @@
 </head>
 
 <body>
+    <?php
+    require_once '../php/bdd.php';
+
+    // Note: Assuming $pdo is available, as in other files. If not, it might be $bdd.
+    
+    $message = '';
+    if (isset($_GET['insert']) && $_GET['insert'] == 'success') {
+        $message = 'Produit ajouté avec succès!';
+    } elseif (isset($_GET['update']) && $_GET['update'] == 'success') {
+        $message = 'Produit modifié avec succès!';
+    } elseif (isset($_GET['delete']) && $_GET['delete'] == 'ok') {
+        $message = 'Produit supprimé avec succès!';
+    }
+
+    // Fetch all products with category names
+    $sql = "SELECT p.id_produit, p.nom, p.prix, c.nom AS categorie_nom
+            FROM produits p
+            LEFT JOIN categories c ON p.id_category = c.id_category
+            ORDER BY p.id_produit";
+    $stmt = $pdo->query($sql);
+    $produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch categories for the add form
+    $categories = $pdo->query("SELECT id_category, nom FROM categories ORDER BY nom")->fetchAll(PDO::FETCH_ASSOC);
+    ?>
     <div class="container">
         <h1>Dashboard des Produits</h1>
 
@@ -73,31 +96,7 @@
         </section>
     </div>
 </body>
-<?php
-require_once '../php/bdd.php';
 
-// Note: Assuming $pdo is available, as in other files. If not, it might be $bdd.
-
-$message = '';
-if (isset($_GET['insert']) && $_GET['insert'] == 'success') {
-    $message = 'Produit ajouté avec succès!';
-} elseif (isset($_GET['update']) && $_GET['update'] == 'success') {
-    $message = 'Produit modifié avec succès!';
-} elseif (isset($_GET['delete']) && $_GET['delete'] == 'ok') {
-    $message = 'Produit supprimé avec succès!';
-}
-
-// Fetch all products with category names
-$sql = "SELECT p.id_produit, p.nom, p.prix, c.nom AS categorie_nom
-        FROM produits p
-        LEFT JOIN categories c ON p.id_category = c.id_category
-        ORDER BY p.id_produit";
-$stmt = $pdo->query($sql);
-$produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Fetch categories for the add form
-$categories = $pdo->query("SELECT id_category, nom FROM categories ORDER BY nom")->fetchAll(PDO::FETCH_ASSOC);
-?>
 </html>
 </content>
 <parameter name="filePath">c:\xampp\htdocs\lido_serena\html\dashboard.php

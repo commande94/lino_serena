@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':id_produit' => $id_produit
         ]);
 
-        header('Location: ../html/dashboard.php?update=success');
+        header('Location: ../html/administration.php?update=success');
         exit();
 
     } catch (PDOException $e) {

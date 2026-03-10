@@ -7,6 +7,6 @@ if (isset($_GET['id'])) {
     $stmt = $pdo->prepare("DELETE FROM produits WHERE id_produit = ?");
     $stmt->execute([$id]);
 
-    header('Location: ../html/dashboard.php?delete=ok');
+    header('Location: ../html/administration.php?delete=ok');
 }
 ?>
