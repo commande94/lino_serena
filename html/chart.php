@@ -87,8 +87,8 @@ $categoriesJSON = json_encode($nomsCategories);
             data: {
                 labels: labelsCategories, 
                 datasets: [{
-                    data: [450, 1200, 800, 600], 
-                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0'],
+                    data: [450, 1200, 800, 600, 500, 450], 
+                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#e7441b', '#aa7e7e'],
                     hoverOffset: 15
                 }]
             },
