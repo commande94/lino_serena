@@ -58,7 +58,22 @@ $categoriesJSON = json_encode($nomsCategories);
     <script>
         Chart.defaults.color = '#000000';
         Chart.defaults.font.weight = '600';
-
+        new Chart(document.getElementById('myChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+                datasets: [{
+                    label: 'Revenus journaliers (€)',
+                    data: [1200, 1900, 1500, 2100, 2800, 4500, 3800],
+                    backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { title: { display: true, text: 'Chiffre d\'affaires de la semaine' } }
+            }
+        });
         // --- 1. GRAPHIQUE BARRES : JOURS DE LA SEMAINE ---
         const ctxBar = document.getElementById('myChart');
         new Chart(ctxBar, {

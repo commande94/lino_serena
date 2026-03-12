@@ -150,10 +150,10 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`id_staff`, `nom`, `prenom`, `email`, `role`, `mot_de_passe`, `date_creation`) VALUES
-(1, 'TATIOTSOP ZEBAZE', 'Miguel', 'migueltatiotsop@icloud.com', 'super-admin', '$2y$10$abc123def456GHI789jkl012mno345pq678rst90uvwx', '2026-02-19 08:43:49'),
-(2, 'MALBLANC', 'Joackim', 'joackimmalblanc@gmail.com', 'admin', '$2y$10$JE1f4E5xnZsa5CBZ5LCso.nqH5OYyX6OyqruvCVBGuzC/B7b.H5Ey', '2026-02-19 09:47:47'),
-(3, 'FRERE', 'Adam', 'adam.frere@gmail.com', 'admin', '$2y$10$GnbIUVw/TLKtLkHePDKow..gzasDYggugi/VTuUBjOMMwv8lz/8Ae', '2026-02-19 10:50:20'),
-(4, 'DJIONGO', 'Dany', 'djiongodontsi@gmail.com', 'admin', '$2y$10$ey/TYvKgsHfxW4n0hJrzb.BEuuvR3H9Uz5jjGsFakBG/lZXULW7..', '2026-03-10 14:34:37');
+(1, 'TA', 'Miguel', 'miguel@icloud.com', 'super-admin', '$2y$10$abc123def456GHI789jkl012mno345pq678rst90uvwx', '2026-02-19 08:43:49'),
+(2, 'MA', 'Joackim', 'joackim@gmail.com', 'admin', '$2y$10$JE1f4E5xnZsa5CBZ5LCso.nqH5OYyX6OyqruvCVBGuzC/B7b.H5Ey', '2026-02-19 09:47:47'),
+(3, 'FR', 'Adam', 'adam@gmail.com', 'admin', '$2y$10$GnbIUVw/TLKtLkHePDKow..gzasDYggugi/VTuUBjOMMwv8lz/8Ae', '2026-02-19 10:50:20'),
+(4, 'DJ', 'Dany', 'djiongo@gmail.com', 'admin', '$2y$10$ey/TYvKgsHfxW4n0hJrzb.BEuuvR3H9Uz5jjGsFakBG/lZXULW7..', '2026-03-10 14:34:37');
 
 -- --------------------------------------------------------
 
