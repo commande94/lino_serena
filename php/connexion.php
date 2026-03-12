@@ -12,9 +12,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($pass_saisi, $user['mot_de_passe'])) {
+            // store basic user info in session including role
             $_SESSION['user_id'] = $user['id_staff'];
             $_SESSION['nom'] = $user['nom'];
             $_SESSION['prenom'] = $user['prenom'];
+            $_SESSION['role'] = $user['role'];
 
             header("Location: ../html/administration.php");
             exit();

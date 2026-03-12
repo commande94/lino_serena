@@ -59,6 +59,9 @@
         <nav>
             <span class="welcome-user" style="background-color: white;">Bienvenue, <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
             <a href="chart.php" class="btn-chart">Voir les statistiques</a>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'manager'): ?>
+                <a href="manage_user.php" class="btn-manage-users">Gérer les utilisateurs</a>
+            <?php endif; ?>
             <a href="../php/logout.php" class="btn-logout" style="background-color: white;">Déconnexion</a>
         </nav>
 
