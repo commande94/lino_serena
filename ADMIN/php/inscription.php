@@ -79,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="">Sélectionnez un rôle</option>
                 <option value="admin">Admin</option>
                 <option value="super-admin">Super Admin</option>
+                <option value="manager">Manager</option>
             </select>
         </div>
 
