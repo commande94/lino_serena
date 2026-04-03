@@ -10,11 +10,11 @@
 </head>
 
 <body>
-   
+
     <a href="inscription.php" class="btn-inscription">
-            Inscription d'un nouveau membre par le Super-Admin
+        Inscription d'un nouveau membre par le Super-Admin
     </a>
-    
+
     <?php
     session_start();
     if (!isset($_SESSION['user_id'])) {
@@ -22,6 +22,8 @@
         exit();
     }
     require_once '../php/bdd.php';
+
+
     $message = '';
     if (isset($_GET['insert'])) {
         if ($_GET['insert'] == 'success') {
@@ -57,11 +59,14 @@
     <div class="container">
         <h1>Dashboard des Produits</h1>
         <nav>
-            <span class="welcome-user" style="background-color: white;">Bienvenue, <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
+            <span class="welcome-user" style="background-color: white;">Bienvenue,
+                <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
             <a href="chart.php" class="btn-chart">Voir les statistiques</a>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'manager'): ?>
                 <a href="manage_user.php" class="btn-manage-users">Gérer les utilisateurs</a>
             <?php endif; ?>
+            <a href="commandes.php" class="btn-chart">Voir les commandes</a>
+
             <a href="../php/logout.php" class="btn-logout" style="background-color: white;">Déconnexion</a>
         </nav>
 
@@ -125,18 +130,17 @@
 
         <!-- Gestion des menus -->
         <?php
-        // Fetch menus and their associated product count
+
         $sql = "SELECT m.id_menu, m.nom, m.prix, m.disponible, m.description,
                        GROUP_CONCAT(p.nom SEPARATOR ', ') AS produits"
-             . " FROM menus m"
-             . " LEFT JOIN produit_menus pm ON m.id_menu = pm.id_menu"
-             . " LEFT JOIN produits p ON pm.id_produit = p.id_produit"
-             . " GROUP BY m.id_menu"
-             . " ORDER BY m.id_menu";
+            . " FROM menus m"
+            . " LEFT JOIN produit_menus pm ON m.id_menu = pm.id_menu"
+            . " LEFT JOIN produits p ON pm.id_produit = p.id_produit"
+            . " GROUP BY m.id_menu"
+            . " ORDER BY m.id_menu";
         $stmt = $pdo->query($sql);
         $menus = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Fetch all products grouped by category for the menu form
         $productsByCategory = [];
         $allProducts = $pdo->query("SELECT id_produit, nom, id_category FROM produits ORDER BY id_category, nom")->fetchAll(PDO::FETCH_ASSOC);
         foreach ($allProducts as $prod) {
@@ -162,12 +166,12 @@
                         $catId = $categorie['id_category'];
                         if (isset($productsByCategory[$catId])):
                             foreach ($productsByCategory[$catId] as $prod):
-                        ?>
-                            <label>
-                                <input type="checkbox" name="produits[]" value="<?= $prod['id_produit'] ?>">
-                                <?= htmlspecialchars($prod['nom']) ?>
-                            </label><br>
-                        <?php
+                                ?>
+                                <label>
+                                    <input type="checkbox" name="produits[]" value="<?= $prod['id_produit'] ?>">
+                                    <?= htmlspecialchars($prod['nom']) ?>
+                                </label><br>
+                                <?php
                             endforeach;
                         else:
                             echo '<em>Aucun produit dans cette catégorie</em><br>';
@@ -206,7 +210,8 @@
                                 <td><?= htmlspecialchars($menu['produits'] ?? '') ?></td>
                                 <td>
                                     <a href="../php/modif_menu.php?id=<?= $menu['id_menu'] ?>" class="btn-edit">Modifier</a>
-                                    <a href="../php/suppr_menu.php?id=<?= $menu['id_menu'] ?>" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ?')">Supprimer</a>
+                                    <a href="../php/suppr_menu.php?id=<?= $menu['id_menu'] ?>" class="btn-delete"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ?')">Supprimer</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
