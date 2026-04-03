@@ -14,6 +14,9 @@
     <a href="inscription.php" class="btn-inscription">
             Inscription d'un nouveau membre par le Super-Admin
     </a>
+    <a href="../php/commande.php" class="btn-inscription">
+            Acceder a la page commande
+    </a>
     
     <?php
     session_start();
