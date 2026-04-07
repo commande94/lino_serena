@@ -326,6 +326,16 @@ ALTER TABLE `staff_menus`
   ADD CONSTRAINT `staff_menus_ibfk_2` FOREIGN KEY (`id_menu`) REFERENCES `menus` (`id_menu`);
 COMMIT;
 
+ALTER TABLE commandes
+
+ADD COLUMN statut_commande ENUM('en attente','en cuisine','prête','livrée') 
+DEFAULT 'en attente',
+
+ADD COLUMN mode_paiement ENUM('espèces','carte') NOT NULL,
+
+ADD COLUMN statut_paiement ENUM('non payé','payé') DEFAULT 'non payé',
+
+ADD COLUMN date_commande DATETIME DEFAULT CURRENT_TIMESTAMP;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
