@@ -10,6 +10,8 @@ from mysql.connector import Error
 import os
 from dotenv import load_dotenv
 
+
+
 # Charger les variables d'environnement
 load_dotenv('conf.env')  # Spécifier le nom du fichier
 
@@ -77,6 +79,24 @@ def get_db_connection():
         print(f"Erreur de connexion à la base de données: {e}")
         raise HTTPException(status_code=500, detail="Erreur de connexion à la base de données")
 
+
+def has_column(table_name: str, column_name: str) -> bool:
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        query = """
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_schema = %s
+              AND table_name = %s
+              AND column_name = %s
+        """
+        cursor.execute(query, (db_config['database'], table_name, column_name))
+        return cursor.fetchone() is not None
+    finally:
+        cursor.close()
+        connection.close()
+
 # Route de test
 @app.get("/", response_class=HTMLResponse)
 def read_root():
@@ -112,53 +132,72 @@ def get_commandes_cuisine():
     Récupère toutes les commandes qui sont actuellement en cuisine
     (statut = 'en cuisine')
     """
-    # MODE DEMO - Retourner des données de test
-    return [
-        CommandeResponse(
-            id_com=1,
-            numero_table=5,
-            plats=[
-                PlatCommande(id_produit=1, nom="Pizza Margherita", quantite=2, prix=12.50),
-                PlatCommande(id_produit=2, nom="Pâtes Carbonara", quantite=1, prix=14.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=39.00
-        ),
-        CommandeResponse(
-            id_com=2,
-            numero_table=3,
-            plats=[
-                PlatCommande(id_produit=3, nom="Burger Deluxe", quantite=3, prix=10.50),
-                PlatCommande(id_produit=4, nom="Frites", quantite=3, prix=3.50),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=42.00
-        ),
-        CommandeResponse(
-            id_com=3,
-            numero_table=7,
-            plats=[
-                PlatCommande(id_produit=5, nom="Salade César", quantite=1, prix=9.00),
-                PlatCommande(id_produit=6, nom="Poulet Grillé", quantite=1, prix=16.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=25.00
-        ),
-        CommandeResponse(
-            id_com=4,
-            numero_table=2,
-            plats=[
-                PlatCommande(id_produit=7, nom="Steak Frites", quantite=1, prix=18.00),
-                PlatCommande(id_produit=8, nom="Salade Verte", quantite=1, prix=5.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=23.00
-        ),
-    ]
+    include_numero_table = has_column('commandes', 'numero_table')
+    select_numero_table = "c.numero_table," if include_numero_table else ""
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        # Récupérer les commandes en cuisine avec leurs produits
+        query = f"""
+            SELECT 
+                c.id_com,
+                {select_numero_table}
+                c.statut_commande,
+                c.date_commande,
+                c.prix_total,
+                pc.id_produit,
+                p.nom,
+                pc.quantite,
+                p.prix as prix_unitaire
+            FROM commandes c
+            LEFT JOIN produit_commande pc ON c.id_com = pc.id_com
+            LEFT JOIN produits p ON pc.id_produit = p.id_produit
+            WHERE c.statut_commande = 'en cuisine'
+            ORDER BY c.date_commande ASC
+        """
+        
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        
+        # Grouper les résultats par commande
+        commandes_dict = {}
+        
+        for row in rows:
+            id_com = row['id_com']
+            if id_com not in commandes_dict:
+                commandes_dict[id_com] = {
+                    'id_com': id_com,
+                    'numero_table': row.get('numero_table') if include_numero_table else None,
+                    'statut_commande': row['statut_commande'],
+                    'date_commande': row['date_commande'],
+                    'prix_total': float(row['prix_total']),
+                    'plats': []
+                }
+            
+            # Ajouter le plat si présent
+            if row['id_produit'] and row['nom']:
+                commandes_dict[id_com]['plats'].append({
+                    'id_produit': row['id_produit'],
+                    'nom': row['nom'],
+                    'quantite': row['quantite'],
+                    'prix': float(row['prix_unitaire']) * row['quantite']
+                })
+        
+        # Convertir en liste de CommandeResponse
+        commandes = []
+        for cmd_data in commandes_dict.values():
+            commandes.append(CommandeResponse(**cmd_data))
+        
+        return commandes
+        
+    except Error as e:
+        print(f"Erreur lors de la récupération des commandes: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur base de données: {str(e)}")
+    finally:
+        cursor.close()
+        connection.close()
 
 # Mettre à jour le statut d'une commande
 @app.put("/commandes/{commande_id}/statut")
@@ -215,11 +254,41 @@ def marquer_commande_prete(commande_id: int):
     Marque une commande comme prête et notifie les serveurs
     C'est l'endpoint principal que les cuisiniers utiliseront
     """
-    # MODE DEMO - Toujours retourner succès
-    return NotificationResponse(
-        message=f"✅ Commande #{commande_id} est prête à être servie !",
-        commande_id=commande_id
-    )
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        # Vérifier si la commande existe et est en cuisine
+        check_query = "SELECT statut_commande FROM commandes WHERE id_com = %s"
+        cursor.execute(check_query, (commande_id,))
+        result = cursor.fetchone()
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="Commande non trouvée")
+        
+        if result[0] != 'en cuisine':
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Commande {commande_id} n'est pas en cuisine (statut actuel: {result[0]})"
+            )
+        
+        # Mettre à jour le statut
+        update_query = "UPDATE commandes SET statut_commande = 'prête' WHERE id_com = %s"
+        cursor.execute(update_query, (commande_id,))
+        connection.commit()
+        
+        return NotificationResponse(
+            message=f"✅ Commande #{commande_id} est prête à être servie !",
+            commande_id=commande_id
+        )
+        
+    except Error as e:
+        connection.rollback()
+        print(f"Erreur lors de la mise à jour de la commande: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur base de données: {str(e)}")
+    finally:
+        cursor.close()
+        connection.close()
 
 # Récupérer les détails complets d'une commande spécifique
 @app.get("/commandes/{commande_id}/details", response_model=CommandeResponse)
@@ -227,59 +296,66 @@ def get_commande_details(commande_id: int):
     """
     Récupère tous les détails d'une commande spécifique
     """
-    # MODE DEMO
-    commandes_demo = [
-        CommandeResponse(
-            id_com=1,
-            numero_table=5,
-            plats=[
-                PlatCommande(id_produit=1, nom="Pizza Margherita", quantite=2, prix=12.50),
-                PlatCommande(id_produit=2, nom="Pâtes Carbonara", quantite=1, prix=14.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=39.00
-        ),
-        CommandeResponse(
-            id_com=2,
-            numero_table=3,
-            plats=[
-                PlatCommande(id_produit=3, nom="Burger Deluxe", quantite=3, prix=10.50),
-                PlatCommande(id_produit=4, nom="Frites", quantite=3, prix=3.50),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=42.00
-        ),
-        CommandeResponse(
-            id_com=3,
-            numero_table=7,
-            plats=[
-                PlatCommande(id_produit=5, nom="Salade César", quantite=1, prix=9.00),
-                PlatCommande(id_produit=6, nom="Poulet Grillé", quantite=1, prix=16.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=25.00
-        ),
-        CommandeResponse(
-            id_com=4,
-            numero_table=2,
-            plats=[
-                PlatCommande(id_produit=7, nom="Steak Frites", quantite=1, prix=18.00),
-                PlatCommande(id_produit=8, nom="Salade Verte", quantite=1, prix=5.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=23.00
-        ),
-    ]
+    include_numero_table = has_column('commandes', 'numero_table')
+    select_numero_table = "c.numero_table," if include_numero_table else ""
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
     
-    for commande in commandes_demo:
-        if commande.id_com == commande_id:
-            return commande
-    
-    raise HTTPException(status_code=404, detail="Commande non trouvée")
+    try:
+        # Récupérer la commande avec ses produits
+        query = f"""
+            SELECT 
+                c.id_com,
+                {select_numero_table}
+                c.statut_commande,
+                c.date_commande,
+                c.prix_total,
+                pc.id_produit,
+                p.nom,
+                pc.quantite,
+                p.prix as prix_unitaire
+            FROM commandes c
+            LEFT JOIN produit_commande pc ON c.id_com = pc.id_com
+            LEFT JOIN produits p ON pc.id_produit = p.id_produit
+            WHERE c.id_com = %s
+        """
+        
+        cursor.execute(query, (commande_id,))
+        rows = cursor.fetchall()
+        
+        if not rows:
+            raise HTTPException(status_code=404, detail="Commande non trouvée")
+        
+        # Construire la réponse
+        first_row = rows[0]
+        commande_data = {
+            'id_com': first_row['id_com'],
+            'numero_table': first_row.get('numero_table') if include_numero_table else None,
+            'statut_commande': first_row['statut_commande'],
+            'date_commande': first_row['date_commande'],
+            'prix_total': float(first_row['prix_total']),
+            'plats': []
+        }
+        
+        # Ajouter tous les plats
+        for row in rows:
+            if row['id_produit'] and row['nom']:
+                commande_data['plats'].append({
+                    'id_produit': row['id_produit'],
+                    'nom': row['nom'],
+                    'quantite': row['quantite'],
+                    'prix': float(row['prix_unitaire']) * row['quantite']
+                })
+        
+        return CommandeResponse(**commande_data)
+        
+    except Error as e:
+        print(f"Erreur lors de la récupération de la commande: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur base de données: {str(e)}")
+    finally:
+        cursor.close()
+        connection.close()
 
 # Endpoint pour avoir des données de test en dur dans la BDD
 @app.post("/test/init-commandes-cuisine")
@@ -304,17 +380,17 @@ def init_test_commandes():
         
         # Insérer des commandes de test
         test_commandes = [
-            (1, 45.50, 'en cuisine', 'espèces', 'non payé', datetime.now()),
-            (1, 32.00, 'en cuisine', 'carte', 'non payé', datetime.now()),
+            (1, 45.50, 'en cuisine', 'espèces', 'non payé', datetime.now(), 5),
+            (1, 32.00, 'en cuisine', 'carte', 'non payé', datetime.now(), 3),
         ]
         
-        for staff_id, prix, statut, mode_paiement, statut_paiement, date_com in test_commandes:
+        for staff_id, prix, statut, mode_paiement, statut_paiement, date_com, numero_table in test_commandes:
             insert_query = """
                 INSERT INTO commandes 
-                (id_staff, prix_total, statut_commande, mode_paiement, statut_paiement, date_commande)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                (id_staff, prix_total, statut_commande, mode_paiement, statut_paiement, date_commande, numero_table)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(insert_query, (staff_id, prix, statut, mode_paiement, statut_paiement, date_com))
+            cursor.execute(insert_query, (staff_id, prix, statut, mode_paiement, statut_paiement, date_com, numero_table))
             commande_id = cursor.lastrowid
             
             # Ajouter des produits de test
