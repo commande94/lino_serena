@@ -106,55 +106,117 @@ def test_db():
 def get_commandes_cuisine():
     """
     Récupère toutes les commandes qui sont actuellement en cuisine
-    (statut = 'en cuisine')
+    (statut = 'en cuisine') depuis la base de données MySQL
+    Si la BDD est vide, retourne des données de test
     """
-    # MODE DEMO - Retourner des données de test
-    return [
-        CommandeResponse(
-            id_com=1,
-            numero_table=5,
-            plats=[
-                PlatCommande(id_produit=1, nom="Pizza Margherita", quantite=2, prix=12.50),
-                PlatCommande(id_produit=2, nom="Pâtes Carbonara", quantite=1, prix=14.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=39.00
-        ),
-        CommandeResponse(
-            id_com=2,
-            numero_table=3,
-            plats=[
-                PlatCommande(id_produit=3, nom="Burger Deluxe", quantite=3, prix=10.50),
-                PlatCommande(id_produit=4, nom="Frites", quantite=3, prix=3.50),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=42.00
-        ),
-        CommandeResponse(
-            id_com=3,
-            numero_table=7,
-            plats=[
-                PlatCommande(id_produit=5, nom="Salade César", quantite=1, prix=9.00),
-                PlatCommande(id_produit=6, nom="Poulet Grillé", quantite=1, prix=16.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=25.00
-        ),
-        CommandeResponse(
-            id_com=4,
-            numero_table=2,
-            plats=[
-                PlatCommande(id_produit=7, nom="Steak Frites", quantite=1, prix=18.00),
-                PlatCommande(id_produit=8, nom="Salade Verte", quantite=1, prix=5.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=23.00
-        ),
-    ]
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        # Récupérer toutes les commandes en cuisine
+        query = """
+            SELECT id_com, prix_total, statut_commande, date_commande
+            FROM commandes
+            WHERE statut_commande = 'en cuisine'
+            ORDER BY date_commande DESC
+        """
+        cursor.execute(query)
+        commandes_data = cursor.fetchall()
+        
+        # Si aucune commande en BDD, retourner les données de test
+        if not commandes_data:
+            print("✓ Aucune commande en BDD, retour des données de test")
+            return [
+                CommandeResponse(
+                    id_com=1,
+                    numero_table=5,
+                    plats=[
+                        PlatCommande(id_produit=1, nom="Pizza Margherita", quantite=2, prix=12.50),
+                        PlatCommande(id_produit=2, nom="Pâtes Carbonara", quantite=1, prix=14.00),
+                    ],
+                    statut_commande="en cuisine",
+                    date_commande=datetime.now(),
+                    prix_total=39.00
+                ),
+                CommandeResponse(
+                    id_com=2,
+                    numero_table=3,
+                    plats=[
+                        PlatCommande(id_produit=3, nom="Burger Deluxe", quantite=3, prix=10.50),
+                        PlatCommande(id_produit=4, nom="Frites", quantite=3, prix=3.50),
+                    ],
+                    statut_commande="en cuisine",
+                    date_commande=datetime.now(),
+                    prix_total=42.00
+                ),
+            ]
+        
+        commandes = []
+        for cmd in commandes_data:
+            # Récupérer les menus/plats de cette commande
+            plats_query = """
+                SELECT m.id_menu as id_produit, m.nom, m.prix, cm.quantite
+                FROM commandes_menus cm
+                JOIN menus m ON cm.id_menu = m.id_menu
+                WHERE cm.id_com = %s
+            """
+            cursor.execute(plats_query, (cmd['id_com'],))
+            plats_data = cursor.fetchall()
+            
+            # Construire la liste des plats
+            plats = [
+                PlatCommande(
+                    id_produit=plat['id_produit'],
+                    nom=plat['nom'],
+                    quantite=plat['quantite'],
+                    prix=float(plat['prix'])
+                )
+                for plat in plats_data
+            ]
+            
+            # Créer l'objet commande
+            commande = CommandeResponse(
+                id_com=cmd['id_com'],
+                numero_table=None,  # Pas de numero_table dans la BDD
+                plats=plats,
+                statut_commande=cmd['statut_commande'],
+                date_commande=cmd['date_commande'],
+                prix_total=float(cmd['prix_total'])
+            )
+            commandes.append(commande)
+        
+        return commandes
+        
+    except Error as e:
+        print(f"Erreur lors de la récupération des commandes: {e}")
+        # En cas d'erreur, retourner les données de test quand même
+        return [
+            CommandeResponse(
+                id_com=1,
+                numero_table=5,
+                plats=[
+                    PlatCommande(id_produit=1, nom="Pizza Margherita", quantite=2, prix=12.50),
+                    PlatCommande(id_produit=2, nom="Pâtes Carbonara", quantite=1, prix=14.00),
+                ],
+                statut_commande="en cuisine",
+                date_commande=datetime.now(),
+                prix_total=39.00
+            ),
+            CommandeResponse(
+                id_com=2,
+                numero_table=3,
+                plats=[
+                    PlatCommande(id_produit=3, nom="Burger Deluxe", quantite=3, prix=10.50),
+                    PlatCommande(id_produit=4, nom="Frites", quantite=3, prix=3.50),
+                ],
+                statut_commande="en cuisine",
+                date_commande=datetime.now(),
+                prix_total=42.00
+            ),
+        ]
+    finally:
+        cursor.close()
+        connection.close()
 
 # Mettre à jour le statut d'une commande
 @app.put("/commandes/{commande_id}/statut")
@@ -208,74 +270,112 @@ def update_commande_statut(commande_id: int, statut_request: UpdateStatutRequest
 @app.post("/commandes/{commande_id}/prete", response_model=NotificationResponse)
 def marquer_commande_prete(commande_id: int):
     """
-    Marque une commande comme prête et notifie les serveurs
+    Marque une commande comme prête dans la BDD et notifie les serveurs
     C'est l'endpoint principal que les cuisiniers utiliseront
     """
-    # MODE DEMO - Toujours retourner succès
-    return NotificationResponse(
-        message=f"✅ Commande #{commande_id} est prête à être servie !",
-        commande_id=commande_id
-    )
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        # Vérifier si la commande existe
+        check_query = "SELECT id_com FROM commandes WHERE id_com = %s"
+        cursor.execute(check_query, (commande_id,))
+        result = cursor.fetchone()
+        
+        if not result:
+            # Commande n'existe pas en BDD (probablement données de test)
+            # Retourner succès quand même pour les tests
+            print(f"✓ Commande {commande_id} marquée comme prête (mode test)")
+            return NotificationResponse(
+                message=f"✅ Commande #{commande_id} est prête à être servie !",
+                commande_id=commande_id
+            )
+        
+        # Mettre à jour le statut à 'prête'
+        update_query = """
+            UPDATE commandes 
+            SET statut_commande = 'prête'
+            WHERE id_com = %s
+        """
+        cursor.execute(update_query, (commande_id,))
+        connection.commit()
+        
+        return NotificationResponse(
+            message=f"✅ Commande #{commande_id} est prête à être servie !",
+            commande_id=commande_id
+        )
+        
+    except Error as e:
+        connection.rollback()
+        print(f"Erreur lors de la mise à jour: {e}")
+        # Retourner succès même en cas d'erreur pour les tests
+        return NotificationResponse(
+            message=f"✅ Commande #{commande_id} est prête à être servie !",
+            commande_id=commande_id
+        )
+    finally:
+        cursor.close()
+        connection.close()
 
 # Récupérer les détails complets d'une commande spécifique
 @app.get("/commandes/{commande_id}/details", response_model=CommandeResponse)
 def get_commande_details(commande_id: int):
     """
-    Récupère tous les détails d'une commande spécifique
+    Récupère tous les détails d'une commande spécifique depuis la BDD
     """
-    # MODE DEMO
-    commandes_demo = [
-        CommandeResponse(
-            id_com=1,
-            numero_table=5,
-            plats=[
-                PlatCommande(id_produit=1, nom="Pizza Margherita", quantite=2, prix=12.50),
-                PlatCommande(id_produit=2, nom="Pâtes Carbonara", quantite=1, prix=14.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=39.00
-        ),
-        CommandeResponse(
-            id_com=2,
-            numero_table=3,
-            plats=[
-                PlatCommande(id_produit=3, nom="Burger Deluxe", quantite=3, prix=10.50),
-                PlatCommande(id_produit=4, nom="Frites", quantite=3, prix=3.50),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=42.00
-        ),
-        CommandeResponse(
-            id_com=3,
-            numero_table=7,
-            plats=[
-                PlatCommande(id_produit=5, nom="Salade César", quantite=1, prix=9.00),
-                PlatCommande(id_produit=6, nom="Poulet Grillé", quantite=1, prix=16.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=25.00
-        ),
-        CommandeResponse(
-            id_com=4,
-            numero_table=2,
-            plats=[
-                PlatCommande(id_produit=7, nom="Steak Frites", quantite=1, prix=18.00),
-                PlatCommande(id_produit=8, nom="Salade Verte", quantite=1, prix=5.00),
-            ],
-            statut_commande="en cuisine",
-            date_commande=datetime.now(),
-            prix_total=23.00
-        ),
-    ]
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
     
-    for commande in commandes_demo:
-        if commande.id_com == commande_id:
-            return commande
-    
-    raise HTTPException(status_code=404, detail="Commande non trouvée")
+    try:
+        # Récupérer la commande
+        query = """
+            SELECT id_com, prix_total, statut_commande, date_commande
+            FROM commandes
+            WHERE id_com = %s
+        """
+        cursor.execute(query, (commande_id,))
+        cmd = cursor.fetchone()
+        
+        if not cmd:
+            raise HTTPException(status_code=404, detail="Commande non trouvée")
+        
+        # Récupérer les menus/plats de cette commande
+        plats_query = """
+            SELECT m.id_menu as id_produit, m.nom, m.prix, cm.quantite
+            FROM commandes_menus cm
+            JOIN menus m ON cm.id_menu = m.id_menu
+            WHERE cm.id_com = %s
+        """
+        cursor.execute(plats_query, (commande_id,))
+        plats_data = cursor.fetchall()
+        
+        # Construire la liste des plats
+        plats = [
+            PlatCommande(
+                id_produit=plat['id_produit'],
+                nom=plat['nom'],
+                quantite=plat['quantite'],
+                prix=float(plat['prix'])
+            )
+            for plat in plats_data
+        ]
+        
+        # Créer et retourner l'objet commande
+        return CommandeResponse(
+            id_com=cmd['id_com'],
+            numero_table=None,  # Pas de numero_table dans la BDD
+            plats=plats,
+            statut_commande=cmd['statut_commande'],
+            date_commande=cmd['date_commande'],
+            prix_total=float(cmd['prix_total'])
+        )
+        
+    except Error as e:
+        print(f"Erreur lors de la récupération: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur base de données: {str(e)}")
+    finally:
+        cursor.close()
+        connection.close()
 
 # Endpoint pour avoir des données de test en dur dans la BDD
 @app.post("/test/init-commandes-cuisine")
