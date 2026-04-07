@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Page Commande</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" type="image/png" href="../ADMIN/image/lidorena.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+
+<header>
+    <h1><i class="fas fa-utensils"></i> Restaurant Commande</h1>
+</header>
+
+<div class="main-container">
+
+    <!-- Partie gauche : produits par catégorie -->
+    <div class="produits-container">
+        <h2>Nos produits</h2>
+        <div id="categories-container">
+            <!-- Les catégories et produits seront ajoutés dynamiquement ici -->
+        </div>
+    </div>
+
+    <!-- Partie droite : panier et paiement -->
+    <div class="panier-container">
+        <h2><i class="fas fa-shopping-cart"></i> Panier</h2>
+        <div id="panier-list">
+            <!-- Les produits sélectionnés s'affichent ici -->
+        </div>
+        <h3>Total : €<span id="panier-total">0.00</span></h3>
+        <div class="form-group">
+            <label>Mode de paiement <i class="fas fa-credit-card"></i></label>
+            <select id="mode_paiement">
+                <option value="especes">Espèces</option>
+                <option value="carte">Carte</option>
+            </select>
+        </div>
+        <button class="btn-submit" onclick="validerCommande()"><i class="fas fa-paper-plane"></i> Valider la
+            commande</button>
+    </div>
+
+</div>
+
+<script src="commande.js"></script>
+</body>
+
+</html>
