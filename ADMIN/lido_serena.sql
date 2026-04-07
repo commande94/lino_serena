@@ -58,25 +58,24 @@ id_category`,
 -- Structure de la table `commandes`
 --
 
-CREATE TABLE `commandes`
-(
-  `id_com` int
-(11) NOT NULL,
-  `id_staff` int
-(11) NOT NULL,
-  `prix_total` decimal
-(10,2) NOT NULL,
-  `statut_commande` enum
-('en attente','en cuisine','prête','livrée') DEFAULT 'en attente',
-  `mode_paiement` enum
-('espèces','carte','chèque') DEFAULT NULL,
-  `statut_paiement` enum
-('payé','non payé') DEFAULT 'non payé',
-  `date_commande` timestamp DEFAULT current_timestamp
-(),
-  `numero_table` int
-(11) DEFAULT NULL
+CREATE TABLE `commandes` (
+  `id_com` int(11) NOT NULL,
+  `id_staff` int(11) NOT NULL,
+  `prix_total` decimal(10,2) NOT NULL,
+  `statut_commande` varchar(50) NOT NULL DEFAULT 'en attente',
+  `numero_table` int(11) DEFAULT NULL,
+  `date_commande` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `commandes`
+--
+
+INSERT INTO `commandes` (`id_com`, `id_staff`, `prix_total`, `statut_commande`, `numero_table`, `date_commande`) VALUES
+(1, 1, 39.00, 'en cuisine', 5, NOW()),
+(2, 1, 42.00, 'en cuisine', 3, NOW()),
+(3, 2, 25.00, 'en cuisine', 7, NOW()),
+(4, 2, 23.00, 'en cuisine', 2, NOW());
 
 -- --------------------------------------------------------
 
@@ -93,6 +92,20 @@ CREATE TABLE `commandes_menus`
   `quantite` int
 (11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `commandes_menus`
+--
+
+INSERT INTO `commandes_menus` (`id_com`, `id_menu`, `quantite`) VALUES
+(1, 1, 2),
+(1, 2, 1),
+(2, 3, 3),
+(2, 4, 3),
+(3, 5, 1),
+(3, 6, 1),
+(4, 7, 1),
+(4, 8, 1);
 
 -- --------------------------------------------------------
 
@@ -113,6 +126,20 @@ CREATE TABLE `menus`
   `disponible` tinyint
 (1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `menus`
+--
+
+INSERT INTO `menus` (`id_menu`, `nom`, `description`, `prix`, `date_creation`, `disponible`) VALUES
+(1, 'Pizza Margherita', 'Pizza classique tomate mozzarella', 12.50, '2026-03-01', 1),
+(2, 'Pâtes Carbonara', 'Pâtes à la crème et jambon', 14.00, '2026-03-01', 1),
+(3, 'Burger Deluxe', 'Double burger viande fromage', 10.50, '2026-03-01', 1),
+(4, 'Frites', 'Frites fraiches croustillantes', 3.50, '2026-03-01', 1),
+(5, 'Salade César', 'Salade fraiche avec poulet', 9.00, '2026-03-01', 1),
+(6, 'Poulet Grillé', 'Poulet fermier grillé', 16.00, '2026-03-01', 1),
+(7, 'Steak Frites', 'Steak 200g avec frites', 18.00, '2026-03-01', 1),
+(8, 'Salade Verte', 'Salade verte fraiches', 5.00, '2026-03-01', 1);
 
 -- --------------------------------------------------------
 
@@ -332,15 +359,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT pour la table `commandes`
 --
 ALTER TABLE `commandes`
-  MODIFY `id_com` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_com` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id_menu` int
-(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `produits`
@@ -437,6 +462,16 @@ ADD CONSTRAINT `staff_menus_ibfk_2` FOREIGN KEY
 (`id_menu`);
 COMMIT;
 
+ALTER TABLE commandes
+
+ADD COLUMN statut_commande ENUM('en attente','en cuisine','prête','livrée') 
+DEFAULT 'en attente',
+
+ADD COLUMN mode_paiement ENUM('espèces','carte') NOT NULL,
+
+ADD COLUMN statut_paiement ENUM('non payé','payé') DEFAULT 'non payé',
+
+ADD COLUMN date_commande DATETIME DEFAULT CURRENT_TIMESTAMP;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -4,37 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lido Serena - Cuisine</title>
+    <title>Cuisine - Lido Serena</title>
     <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
     <div class="container">
-        <header>
+        <header class="header">
             <h1>🍳 Cuisine - Lido Serena</h1>
-            <div class="status">
-                <span id="api-status" class="status-dot"></span>
-                <span id="status-text">Connexion...</span>
+            <div class="header-info">
+                <span id="status-connection">Connexion...</span>
+                <span id="last-update">Dernier update: --</span>
             </div>
         </header>
 
-        <div class="controls">
-            <button id="refresh-btn" class="btn btn-primary">🔄 Actualiser</button>
-            <div class="timer">Actualisation auto : <span id="timer">5</span>s</div>
-        </div>
+        <main class="main-content">
+            <div class="controls">
+                <button id="refresh-btn" class="btn btn-primary">🔄 Rafraîchir les commandes</button>
+                <span class="commande-count">Commandes: <strong id="count">0</strong></span>
+            </div>
 
-        <main>
             <div id="commandes-container" class="commandes-grid">
                 <div class="loading">Chargement des commandes...</div>
             </div>
         </main>
 
-        <footer>
-            <p>API: http://localhost:8000</p>
+        <footer class="footer">
+            <p>&copy; 2026 Lido Serena - Système de Gestion Cuisine</p>
         </footer>
     </div>
 
-    <script src="./index.js"></script>
+    <!-- Modal pour confirmation -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <h2>Confirmer</h2>
+            <p id="modal-message"></p>
+            <div class="modal-buttons">
+                <button id="confirm-btn" class="btn btn-success">Confirmer</button>
+                <button id="cancel-btn" class="btn btn-secondary">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
