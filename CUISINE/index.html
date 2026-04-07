@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuisine - Lido Serena</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🍳 Cuisine - Lido Serena</h1>
+            <div class="header-info">
+                <span id="status-connection">Connexion...</span>
+                <span id="last-update">Dernier update: --</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="controls">
+                <button id="refresh-btn" class="btn btn-primary">🔄 Rafraîchir les commandes</button>
+                <span class="commande-count">Commandes: <strong id="count">0</strong></span>
+            </div>
+
+            <div id="commandes-container" class="commandes-grid">
+                <div class="loading">Chargement des commandes...</div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Lido Serena - Système de Gestion Cuisine</p>
+        </footer>
+    </div>
+
+    <!-- Modal pour confirmation -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <h2>Confirmer</h2>
+            <p id="modal-message"></p>
+            <div class="modal-buttons">
+                <button id="confirm-btn" class="btn btn-success">Confirmer</button>
+                <button id="cancel-btn" class="btn btn-secondary">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
