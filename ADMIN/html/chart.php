@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 require_once '../php/bdd.php';
 
-// Récupérer les catégories dynamiquement depuis la base de données
+
 $sqlCat = "SELECT nom FROM categories ORDER BY id_category";
 $stmtCat = $pdo->query($sqlCat);
 $categories = $stmtCat->fetchAll(PDO::FETCH_ASSOC);
@@ -16,7 +16,6 @@ foreach ($categories as $cat) {
     $nomsCategories[] = $cat['nom'];
 }
 
-// On transforme les catégories en JSON pour le JS
 $categoriesJSON = json_encode($nomsCategories);
 ?>
 
@@ -34,7 +33,8 @@ $categoriesJSON = json_encode($nomsCategories);
 
     <h1 class="dashboard-title" style="background-color: white;">Statistiques Live</h1>
     <nav>
-        <span class="welcome-user" style="background-color: white;">Bienvenue, <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
+        <span class="welcome-user" style="background-color: white;">Bienvenue,
+            <?= htmlspecialchars($_SESSION['prenom'] . ' ' . $_SESSION['nom']) ?></span>
         <a href="administration.php" class="btn-back" style="background-color: white;">Retour à l'administration</a>
         <a href="../php/logout.php" class="btn-logout" style="background-color: white;">Déconnexion</a>
     </nav>
@@ -58,7 +58,22 @@ $categoriesJSON = json_encode($nomsCategories);
     <script>
         Chart.defaults.color = '#000000';
         Chart.defaults.font.weight = '600';
-
+        new Chart(document.getElementById('myChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+                datasets: [{
+                    label: 'Revenus journaliers (€)',
+                    data: [1200, 1900, 1500, 2100, 2800, 4500, 3800],
+                    backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { title: { display: true, text: 'Chiffre d\'affaires de la semaine' } }
+            }
+        });
         // --- 1. GRAPHIQUE BARRES : JOURS DE LA SEMAINE ---
         const ctxBar = document.getElementById('myChart');
         new Chart(ctxBar, {
@@ -78,28 +93,27 @@ $categoriesJSON = json_encode($nomsCategories);
             }
         });
 
-        // --- 2. GRAPHIQUE CAMEMBERT : RAPPORTS PAR CATÉGORIE (AVEC €) ---
         const ctxPie = document.getElementById('myPie');
-        const labelsCategories = <?php echo $categoriesJSON; ?>; 
-        
+        const labelsCategories = <?php echo $categoriesJSON; ?>;
+
         new Chart(ctxPie, {
             type: 'pie',
             data: {
-                labels: labelsCategories, 
+                labels: labelsCategories,
                 datasets: [{
-                    data: [450, 1200, 800, 600], 
+                    data: [450, 1200, 800, 600],
                     backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0'],
                     hoverOffset: 15
                 }]
             },
             options: {
-                plugins: { 
+                plugins: {
                     title: { display: true, text: 'Part des revenus par catégorie' },
                     legend: { position: 'bottom' },
                     // C'est ici qu'on ajoute le symbole € au survol
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 let label = context.label || '';
                                 if (label) { label += ': '; }
                                 if (context.parsed !== null) {
@@ -141,14 +155,14 @@ $categoriesJSON = json_encode($nomsCategories);
                 ]
             },
             options: {
-                plugins: { 
+                plugins: {
                     title: { display: true, text: 'Performance Financière Mensuelle' }
                 },
                 scales: {
-                    y: { 
+                    y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: function(value) { return value + ' €'; }
+                            callback: function (value) { return value + ' €'; }
                         }
                     }
                 }
@@ -156,4 +170,5 @@ $categoriesJSON = json_encode($nomsCategories);
         });
     </script>
 </body>
+
 </html>
