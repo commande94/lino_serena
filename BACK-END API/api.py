@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -77,19 +78,22 @@ def get_db_connection():
         raise HTTPException(status_code=500, detail="Erreur de connexion à la base de données")
 
 # Route de test
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    return {
-        "message": "Bienvenue sur l'API Cuisine du Lido Serena",
-        "status": "online",
-        "endpoints_disponibles": [
-            "/commandes/cuisine",
-            "/commandes/{commande_id}/statut",
-            "/commandes/{commande_id}/prete",
-            "/commandes/{commande_id}/details",
-            "/test/db"
-        ]
-    }
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return """
+        <html>
+        <head><title>Lido Serena API</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h1>🍳 Lido Serena API</h1>
+            <p>API en cours de chargement...</p>
+            <p><a href="/docs">📚 Documentation Swagger</a></p>
+        </body>
+        </html>
+        """
 
 # Test de connexion à la BDD
 @app.get("/test/db")

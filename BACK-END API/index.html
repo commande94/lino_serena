@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lido Serena - API Documentation</title>
+    <link rel="stylesheet" href="../ADMIN/css/style.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 8px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .method.get {
+            background: #61affe;
+            color: white;
+        }
+
+        .method.post {
+            background: #49cc90;
+            color: white;
+        }
+
+        .method.put {
+            background: #fca130;
+            color: white;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: #95a5a6;
+        }
+
+        .btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍳 Lido Serena API</h1>
+            <p>API REST pour l'application cuisine du restaurant Lido Serena</p>
+            <div class="status">🟢 API Online</div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>📋 Commandes Cuisine</h3>
+                <p>Récupère et gère les commandes en cours de préparation</p>
+                <div class="endpoint">
+                    <span class="method get">GET</span>/commandes/cuisine
+                </div>
+                <div class="endpoint">
+                    <span class="method post">POST</span>/commandes/{id}/prete
+                </div>
+                <div class="endpoint">
+                    <span class="method put">PUT</span>/commandes/{id}/statut
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Détails Commandes</h3>
+                <p>Informations complètes sur une commande spécifique</p>
+                <div class="endpoint">
+                    <span class="method get">GET</span>/commandes/{id}/details
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🧪 Tests & Débogage</h3>
+                <p>Outils de test et vérification de l'API</p>
+                <div class="endpoint">
+                    <span class="method get">GET</span>/test/db
+                </div>
+                <div class="endpoint">
+                    <span class="method post">POST</span>/test/init-commandes-cuisine
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Interfaces Front-end</h3>
+                <p>Accès aux interfaces utilisateur</p>
+                <div class="endpoint">
+                    <span class="method get">GET</span>/cuisine → Interface Cuisine
+                </div>
+                <div class="endpoint">
+                    <span class="method get">GET</span>/commande → Interface Commandes
+                </div>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="/docs" class="btn">📚 Documentation Swagger</a>
+            <a href="/redoc" class="btn">📖 Documentation ReDoc</a>
+            <a href="/cuisine" class="btn secondary">🍳 Ouvrir Cuisine</a>
+            <a href="/commande" class="btn secondary">📝 Ouvrir Commandes</a>
+        </div>
+
+        <div class="footer">
+            <p>🚀 Powered by FastAPI • Version 1.0.0 • Lido Serena Restaurant</p>
+        </div>
+    </div>
+</body>
+
+</html>

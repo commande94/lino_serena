@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lido Serena - Cuisine</title>
+    <link rel="stylesheet" href="../ADMIN/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🍳 Cuisine - Lido Serena</h1>
+            <div class="status">
+                <span id="api-status" class="status-dot"></span>
+                <span id="status-text">Connexion...</span>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button id="refresh-btn" class="btn btn-primary">🔄 Actualiser</button>
+            <div class="timer">Actualisation auto : <span id="timer">5</span>s</div>
+        </div>
+
+        <main>
+            <div id="commandes-container" class="commandes-grid">
+                <div class="loading">Chargement des commandes...</div>
+            </div>
+        </main>
+
+        <footer>
+            <p>API: http://localhost:8000</p>
+        </footer>
+    </div>
+
+    <script src="./index.js"></script>
+</body>
+
+</html>
